@@ -1,4 +1,5 @@
-﻿using ECommerce.Data.Models.Identity;
+﻿using ECommerce.Data.Models.Entities;
+using ECommerce.Data.Models.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,5 +16,9 @@ namespace ECommerce.Data.Context
         {
             optionsBuilder.UseSqlServer("Server=localhost;Database=ECommerceDb;User Id=sa;Password=1234;TrustServerCertificate=true;");
         }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
     }
 }
