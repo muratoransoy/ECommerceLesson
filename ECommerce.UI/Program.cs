@@ -25,6 +25,20 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 }).AddEntityFrameworkStores<ECommerceContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(option =>
+{
+    option.LoginPath = "/Account/Login";
+    option.AccessDeniedPath = "/";
+    option.Cookie = new CookieBuilder
+    {
+        Name = "AspNetCoreIdentityExampleCookie",
+        HttpOnly = false,
+        SameSite = SameSiteMode.Lax,
+        SecurePolicy = CookieSecurePolicy.None
+    };
+});
+
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -41,6 +55,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
