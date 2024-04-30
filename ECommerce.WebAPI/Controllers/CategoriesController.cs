@@ -9,26 +9,26 @@ namespace ECommerce.WebAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        ICategoryDAL _categoryDAL;
+        ICategoryDAL _IcategoryDAL;
 
-        public CategoriesController(ICategoryDAL categoryDAL)
+        public CategoriesController(ICategoryDAL icategoryDAL)
         {
-            _categoryDAL = categoryDAL;
+            _IcategoryDAL = icategoryDAL;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_categoryDAL.GetAll());
+            return Ok(_IcategoryDAL.GetAll());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            if (id == null || _categoryDAL.GetAll() == null)
+            if (id == null || _IcategoryDAL.GetAll() == null)
                 return BadRequest();
 
-            var category = _categoryDAL.Get(Convert.ToInt32(id));
+            var category = _IcategoryDAL.Get(Convert.ToInt32(id));
             if (category == null)
                 return NotFound("Category Not Found!!!");
 
@@ -40,7 +40,7 @@ namespace ECommerce.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryDAL.Add(category);
+                _IcategoryDAL.Add(category);
 
                 return CreatedAtAction("Get", new { id = category.Id }, category);
             }
@@ -52,7 +52,7 @@ namespace ECommerce.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryDAL.Update(category);
+                _IcategoryDAL.Update(category);
                 return Ok(category);
             }
             return BadRequest();
@@ -61,12 +61,12 @@ namespace ECommerce.WebAPI.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var category = _categoryDAL.Get(i => i.Id == id);
+            var category = _IcategoryDAL.Get(i => i.Id == id);
 
             if (category == null)
                 return BadRequest();
 
-            _categoryDAL.Delete(id);
+            _IcategoryDAL.Delete(id);
             return Ok();
         }
     }
