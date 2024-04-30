@@ -24,5 +24,9 @@ namespace ECommerce.UI.Controllers
             }
             return NotFound("Category list could not be retrieved...");
         }
+        public IActionResult Details()
+        {
+            return View();
+        }
     }
 }
