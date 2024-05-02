@@ -1,3 +1,5 @@
+using ECommerce.DAL.Abstract;
+using ECommerce.DAL.Concreate;
 using ECommerce.Data.Context;
 using ECommerce.Data.Models.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,8 @@ builder.Services.AddControllersWithViews();
 
 //Dependency Injection
 builder.Services.AddDbContext<ECommerceContext>();
+builder.Services.AddScoped<ICategoryDAL, CategoryDAL>();
+builder.Services.AddScoped<IProductDAL, ProductDAL>();
 
 //Identity
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
