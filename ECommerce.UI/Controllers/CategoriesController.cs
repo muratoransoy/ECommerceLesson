@@ -76,6 +76,26 @@ namespace ECommerce.UI.Controllers
             return View(category);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var responseMessage = await _httpClient.GetAsync("https://localhost:7240/api/Categories/" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonString = await responseMessage.Content.ReadAsStringAsync();
+                var value = JsonConvert.DeserializeObject<Category>(jsonString);
+                return View(value);
+            }
+            return NotFound("Categories is Not Found!!!");
+        }
 
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var responseMessage = await _httpClient.DeleteAsync("https://localhost:7240/api/Categories?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+                return RedirectToAction("Index");
+            return NotFound("Categories is Not Found!!!");
+        }
     }
 }

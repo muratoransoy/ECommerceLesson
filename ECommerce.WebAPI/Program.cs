@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 //Dependency Injection
 builder.Services.AddDbContext<ECommerceContext>();
 builder.Services.AddScoped<ICategoryDAL, CategoryDAL>();
+builder.Services.AddScoped<IProductDAL, ProductDAL>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
