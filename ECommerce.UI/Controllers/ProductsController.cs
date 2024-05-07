@@ -61,5 +61,89 @@ namespace ECommerce.UI.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Products == null)
+                return NotFound();
+
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null)
+                return NotFound();
+
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CategoryId,Image,Stock,Price,IsHome,IsApproved")] Product product, IFormFile image)
+        {
+            if (id != product.Id)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                try
+                {
+                    if (image != null && image.Length > 0)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            await image.CopyToAsync(stream);
+                            product.Image = stream.ToArray();
+                        }
+                    }
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductsExists(product.Id))
+                        return NotFound();
+                    else
+                        throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            return View(product);
+        }
+        
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || _context.Products == null)
+                return NotFound();
+
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (product == null)
+                return NotFound();
+
+            return View(product);
+        }
+
+        [HttpPost,ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletedConfirmed(int id)
+        {
+            if (_context.Products == null)
+                return Problem("Entity set 'ECommerceContext.Products' is null");
+
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+                _context.Products.Remove(product);
+
+            await _context.SaveChangesAsync();  
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductsExists(int id)
+        {
+            return _context.Products.Any(x => x.Id == id);
+        }
     }
 }
